@@ -1,0 +1,13 @@
+.item-block {
+  background-color: #417bff;
+  color: white;
+  height: 10em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

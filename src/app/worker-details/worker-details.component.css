@@ -1,0 +1,42 @@
+.field-name {
+  color: #CCCCCC;
+  margin-bottom: 0px;
+  line-height: 0.5em;
+}
+.field-value {
+  font-size: 1.5em;
+}
+.roboto-regular {
+  font-family: 'Roboto Regular', sans-serif;
+}
+.roboto-medium {
+  font-family: 'Roboto Medium', sans-serif;
+}
+.date-and-month {
+  font-size: 0.8em;
+  margin-bottom: 0px;
+}
+.year {
+  font-size: 1.2em;
+  width: 50%;
+  margin: 0 auto;
+  line-height: 1em;
+}
+.date-align {
+  width: 30%;
+  text-align: center;
+}
+.medical-title {
+  margin-bottom: 8px;
+}
+.panel {
+  border: 1px solid #eaeaea;
+  padding-left: 8px;
+  padding-right: 8px;
+  background-color: #fff;
+  border-radius: 0.5em;
+}
+.day-number {
+  border: 2px solid #f2f2f2;
+  border-radius: 2em;
+}

@@ -1,0 +1,365 @@
+<!-- NAVIGATION -->
+<div class="navigation d-flex align-items-center">
+  <div class="w-100">
+    <div class="d-flex justify-content-between">
+
+
+      <div class="align-self-center">
+        <div class="d-inline mx-3" routerLink="/workers">
+          <i class="far fa-arrow-left navigation-arrow"></i>
+        </div>
+        <div class="d-inline navigation-title">
+          <span>Detalji o radniku</span>
+        </div>
+      </div>
+
+      <!-- RIGHT OPTION -->
+      <div class="align-self-center" routerLink="/editWorker/{{worker?.id}}">
+        <i class="far fa-edit navigation-right-option mr-3"></i>
+      </div>
+      <!-- / RIGHT OPTION -->
+
+    </div>
+  </div>
+</div>
+<!-- / NAVIGATION -->
+<mat-tab-group>
+  <mat-tab label="O radniku">
+    <div class="container">
+      <div class="row px-2 mt-2">
+        <div class="col px-0">
+          <p class="field-name">
+            Ime:
+          </p>
+          <p class="field-value roboto-medium">
+            {{worker?.name}}
+          </p>
+          <p class="field-name">
+            Prezime:
+          </p>
+          <p class="field-value roboto-medium">
+            {{worker?.surname}}
+          </p>
+          <p class="field-name">
+            Telefon:
+          </p>
+          <p class="field-value roboto-regular">
+            {{worker?.phone}}
+          </p>
+          <p class="field-name">
+            Adresa:
+          </p>
+          <p class="field-value roboto-regular">
+            {{worker?.address}}
+          </p>
+          <p class="field-name medical-title">
+            Lekarski pregled:
+          </p>
+          <div class="d-flex justify-content-around">
+            <div class="date-align">
+              <p class="date-and-month roboto-medium" *ngIf="worker">{{worker?.medicalExamDate.getDate()}}. {{dateToMonth(worker?.medicalExamDate)}}</p>
+              <p class="year roboto-medium">{{worker?.medicalExamDate.getFullYear()}}.</p>
+            </div>
+            <div class="date-align">
+                <i class="fal fa-stethoscope fa-lg"></i><br>
+              <i class="fal fa-long-arrow-right fa-2x"></i>
+            </div>
+            <div class="date-align">
+              <p class="date-and-month roboto-medium" *ngIf="worker">{{worker?.medicalExamExpirationDate.getDate()}}. {{dateToMonth(worker?.medicalExamExpirationDate)}}</p>
+              <p class="year roboto-medium">{{worker?.medicalExamExpirationDate.getFullYear()}}.</p>
+            </div>
+          </div>
+          <p class="field-name medical-title">
+            Trajanje ugovora o radu:
+          </p>
+          <div class="d-flex justify-content-around">
+            <div class="date-align">
+              <p class="date-and-month roboto-medium" *ngIf="worker">{{worker?.contractDate.getDate()}}. {{dateToMonth(worker?.contractDate)}}</p>
+              <p class="year roboto-medium">{{worker?.contractDate.getFullYear()}}.</p>
+            </div>
+            <div class="date-align">
+                <i class="fal fa-briefcase fa-lg"></i><br>
+              <i class="fal fa-long-arrow-right fa-2x"></i>
+            </div>
+            <div class="date-align">
+              <p class="date-and-month roboto-medium" *ngIf="worker">{{worker?.contractExpirationDate.getDate()}}. {{dateToMonth(worker?.contractExpirationDate)}}</p>
+              <p class="year roboto-medium">{{worker?.contractExpirationDate.getFullYear()}}.</p>
+            </div>
+          </div>
+          <p class="field-name">
+            Status:
+          </p>
+          <p class="field-value roboto-regular">
+            {{worker?.status === true ? 'Aktivan' : 'Neaktivan'}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="Finansije">
+    <div class="row mx-0 mt-2">
+      <div class="col">
+        <p class="field-name">
+          Satnica radnika:
+        </p>
+        <p class="field-value roboto-regular">
+          {{worker?.hourlyRate | number:'1.0-2'}} din/h
+        </p>
+        <p class="field-name">
+          Datum važenja satnica:
+        </p>
+        <p class="field-value roboto-regular">
+          {{worker?.hourlyRateDate | date:'dd.MM.yyyy.'}}
+        </p>
+        <p class="field-name">
+          Ukupna zarada:
+        </p>
+        <p class="field-value roboto-regular">
+          {{worker?.totalSalary | number:'1.0-2'}} din
+        </p>
+        <p class="field-name">
+          Ukupan dug prema radniku:
+        </p>
+        <p class="field-value roboto-regular">
+          {{worker?.totalDebt | number:'1.0-2'}} din
+        </p>
+
+
+      </div>
+    </div>
+
+    <!-- ADD NEW PAYMENT -->
+    <div class="row p-1 mx-0">
+      <div class="col shadow-sm panel">
+        <form #paymentForm="ngForm" (ngSubmit)="payWorker(worker, paymentForm)">
+          <mat-form-field>
+            <input matInput placeholder="Iznos za isplatu (din)" ngModel name="amount" type="number">
+          </mat-form-field>
+          <button class="ml-2" mat-raised-button type="submit" color="primary">Isplati</button>
+        </form>
+      </div>
+    </div>
+    <!-- / ADD NEW PAYMENT -->
+
+    <!-- HOURLY RATES HISTORY -->
+    <div class="row p-1 mx-0">
+      <div class="col shadow-sm panel">
+        <div class="d-flex justify-content-between">
+          <span class="my-auto">Istorija promena satnice</span>
+          <button mat-icon-button color="primary" (click)="changeShowAllHourlyRates()"><i class="fas fa-chevron-circle-down fa-lg"></i></button>
+        </div>
+        <div *ngIf="showAllHourlyRates">
+          <div *ngFor="let hourlyRate of sortingByDate(hourlyRates)">
+              <hr class="my-2">
+              <div class="d-flex justify-content-between">
+                <span>{{hourlyRate.ammount | number:'1.0-2'}} din</span>
+                <span>{{hourlyRate.date | date:'dd.MM.yyyy.'}}</span>
+              </div>
+          </div>
+          <div *ngIf="hourlyRates.length === 0">
+            <div class="d-flex justify-content-center">
+              <div class="p-3 empty-list-text">
+                <span>Satnica nikad nije menjana</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / HOURLY RATES HISTORY -->
+
+    <!-- PAYMENTS HISTORY -->
+    <div class="row p-1 mx-0">
+      <div class="col shadow-sm panel">
+        <div class="d-flex justify-content-between">
+          <span class="my-auto">Istorija isplata</span>
+          <button mat-icon-button color="primary" (click)="changePaymentsVisibility()"><i class="fas fa-chevron-circle-down fa-lg"></i></button>
+        </div>
+        <div *ngIf="paymentsVisibility">
+          <div *ngFor="let payment of payments">
+            <hr class="my-2">
+            <div class="d-flex justify-content-between">
+              <span>{{payment.amount | number:'1.0-2'}} din</span>
+              <span>{{payment.date | date:'dd.MM.yyyy'}}, {{payment.date | date:'HH:mm'}}</span>
+            </div>
+            <div class="d-flex justify-content-end">
+              <i>{{payment.managersName + ' ' + payment.managersSurname}}</i>
+            </div>
+          </div>
+          <div *ngIf="payments.length === 0">
+            <div class="d-flex justify-content-center">
+              <div class="p-3 empty-list-text">
+                <span>Nema istorije isplata radnika</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / PAYMENTS HISTORY -->
+
+
+  </mat-tab>
+  <mat-tab label="Pregled">
+    <mat-tab-group>
+      <mat-tab label="Po danu">
+
+        <div class="row px-1 mx-0 my-2">
+          <div class="col shadow-sm panel">
+
+            <mat-form-field>
+              <input matInput placeholder="Odabir dana za prikaz" (dateInput)="daySelected($event.value)" [matDatepicker]="picker" required>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+          </div>
+        </div>
+
+        <div class="row px-1 mx-0" *ngIf="workerDetailsForDay">
+          <div class="col shadow-sm panel pt-3">
+              <p class="field-name">
+                Prosečna satnica:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForDay.hourlyRate}} din/h
+              </p>
+              <p class="field-name">
+                Ukupno radnih sati:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForDay.totalWorkHours}} h
+              </p>
+              <p class="field-name">
+                Ukupna zarada:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForDay.totalSalary}} din
+              </p>
+          </div>
+        </div>
+
+      </mat-tab>
+      <mat-tab label="Po mesecu">
+
+        <div class="row px-1 mx-0 my-2">
+          <div class="col shadow-sm panel">
+            <div class="row">
+
+              <div class="col-6">
+                <mat-label>Godina</mat-label>
+                <mat-select placeholder="Odaberite godinu" (selectionChange)="yearSelected($event.value)">
+                  <mat-option *ngFor="let year of years" [value]="year">
+                    {{year}}
+                  </mat-option>
+                </mat-select>
+              </div>
+
+              <div class="col-6">
+                <mat-label>Mesec</mat-label>
+                <mat-select placeholder="Odaberite mesec" (selectionChange)="monthSelected($event.value)">
+                  <mat-option *ngFor="let month of months" [value]="month.value">
+                    {{month.name}}
+                  </mat-option>
+                </mat-select>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row px-1 mx-0" *ngIf="workerDetailsForMonthAndDays">
+          <div class="col shadow-sm panel pt-3">
+              <p class="field-name">
+                Prosečna satnica:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForMonthAndDays.workerDetailsForMonth?.hourlyRate}} din/h
+              </p>
+              <p class="field-name">
+                Ukupno radnih sati:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForMonthAndDays.workerDetailsForMonth?.totalWorkHours}} h
+              </p>
+              <p class="field-name">
+                Ukupna zarada:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForMonthAndDays.workerDetailsForMonth?.totalSalary}} din
+              </p>
+          </div>
+        </div>
+
+        <div class="row px-1 mx-0" *ngIf="workerDetailsForMonthAndDays">
+          <div class="col shadow-sm panel py-2 mt-2 mb-3">
+            <div *ngFor="let workerDetailsForADay of workerDetailsForMonthAndDays.workerDetailsForDays">
+              <div class="d-flex justify-content-between">
+                <span class="day-number p-1 my-auto">&nbsp;{{workerDetailsForADay.day}}.</span>
+                <span>{{workerDetailsForADay.workerDetails.totalWorkHours}} h * {{workerDetailsForADay.workerDetails.hourlyRate | number:'1.0-2'}} din/h</span>
+              </div>
+              <div class="d-flex justify-content-end">
+                <span>{{workerDetailsForADay.workerDetails.totalSalary | number:'1.0-2'}} din</span>
+              </div>
+              <hr class="my-2" *ngIf="workerDetailsForMonthAndDays.workerDetailsForDays[workerDetailsForMonthAndDays.workerDetailsForDays.length] === workerDetailsForADay">
+            </div>
+            <div *ngIf="workerDetailsForMonthAndDays.workerDetailsForDays.length === 0">
+              <div class="d-flex justify-content-center">
+                <div class="p-3 empty-list-text">
+                  <span>Radnik nije radio u ovom mesecu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </mat-tab>
+      <mat-tab label="Po godini">
+
+        <div class="row px-1 mx-0 my-2">
+          <div class="col shadow-sm panel">
+
+            <mat-label>Godina</mat-label>
+            <mat-select placeholder="Odaberite godinu" (selectionChange)="onlyYearSelected($event.value + '')">
+              <mat-option *ngFor="let year of years" [value]="year">
+                {{year}}
+              </mat-option>
+            </mat-select>
+
+          </div>
+        </div>
+
+        <div class="row px-1 mx-0" *ngIf="workerDetailsForYear">
+          <div class="col shadow-sm panel pt-3">
+              <p class="field-name">
+                Prosečna satnica:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForYear.hourlyRate}} din/h
+              </p>
+              <p class="field-name">
+                Ukupno radnih sati:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForYear.totalWorkHours}} h
+              </p>
+              <p class="field-name">
+                Ukupna zarada:
+              </p>
+              <p class="field-value roboto-regular">
+                {{workerDetailsForYear.totalSalary}} din
+              </p>
+          </div>
+        </div>
+
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
+</mat-tab-group>
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+<!-- NAVIGATION -->
+<div class="navigation d-flex align-items-center">
+  <div class="w-100">
+    <div class="d-flex justify-content-between">
+
+      <div class="align-self-center">
+        <div class="d-inline mx-3" routerLink="/">
+          <i class="far fa-arrow-left navigation-arrow"></i>
+        </div>
+        <div class="d-inline navigation-title">
+          <span>Lista gradilišta</span>
+        </div>
+      </div>
+
+      <!-- RIGHT OPTION -->
+      <div class="align-self-center" routerLink="/newConstructionSite">
+        <i class="fal fa-plus navigation-right-option mr-3"></i>
+      </div>
+      <!-- / RIGHT OPTION -->
+
+    </div>
+  </div>
+</div>
+<!-- / NAVIGATION -->
+<div class="block-border px-2 pb-2">
+
+  <form [formGroup]="constructionSiteNameFilterForm">
+    <mat-form-field class="w-100">
+      <input matInput placeholder="Pretraga gradilišta" type="text" (input)="filter($event.target.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </form>
+
+  <div class="px-2 py-3 my-2 shadow-sm w-100" style="background-color: white;" *ngFor="let constructionSite of constructionSitesListFiltered" routerLink="/constructionSiteDetails/{{constructionSite.id}}">
+    <p class="construction-site-name">{{constructionSite.name}}</p>
+    <p class="construction-site-address">{{constructionSite.address}}</p>
+  </div>
+
+  <div *ngIf="constructionSitesListFiltered.length == 0">
+    Nema gradilišta za prikaz
+  </div>
+
+
+</div>

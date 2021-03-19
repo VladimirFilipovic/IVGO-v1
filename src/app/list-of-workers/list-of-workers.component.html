@@ -1,0 +1,48 @@
+<!-- NAVIGATION -->
+<div class="navigation d-flex align-items-center">
+  <div class="w-100">
+    <div class="d-flex justify-content-between">
+
+      <div class="align-self-center">
+        <div class="d-inline mx-3" routerLink="/">
+          <i class="far fa-arrow-left navigation-arrow"></i>
+        </div>
+        <div class="d-inline navigation-title">
+          <span>Lista radnika</span>
+        </div>
+      </div>
+
+      <!-- RIGHT OPTION -->
+      <div class="align-self-center" routerLink="/newWorker">
+        <i class="fal fa-user-plus navigation-right-option mr-3"></i>
+      </div>
+      <!-- / RIGHT OPTION -->
+
+    </div>
+  </div>
+</div>
+<!-- / NAVIGATION -->
+
+<div class="block-border px-2 pb-2">
+
+  <mat-form-field class="w-100">
+    <input matInput placeholder="Pretraga radnika" type="text" (input)="filter($event.target.value)">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <div class="px-2 py-3 my-2 shadow-sm w-100" style="background-color: white;" *ngFor="let worker of workersListFiltered" routerLink="/workerDetails/{{worker.id}}">
+    <div class="d-flex justify-content-between">
+      <p class="construction-site-name">{{worker.name}} {{worker.surname}}</p>
+      <p class="construction-site-name mr-3" [ngClass]="{'text-danger' : worker.totalDebt > 0}">{{worker.totalDebt | number:'1.0-2'}} din</p>
+    </div>
+  </div>
+
+  <div *ngIf="workersListFiltered.length == 0">
+    <div class="d-flex justify-content-center">
+      <div class="p-3 empty-list-text">
+        <span>Nema radnika koji se tako zovu</span>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,11 @@
+.construction-site-name {
+  margin-bottom: 0px;
+}
+.construction-site-address {
+  margin-bottom: 0px;
+  color: #adadad;
+}
+
+mat-form-field {
+  height: 3.2em;
+}

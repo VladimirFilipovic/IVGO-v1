@@ -1,0 +1,101 @@
+<!-- NAVIGATION -->
+<div class="navigation d-flex align-items-center">
+  <div class="w-100">
+    <div class="d-flex justify-content-between">
+
+
+      <div class="align-self-center">
+        <div class="d-inline mx-3" routerLink="/workers">
+          <i class="far fa-arrow-left navigation-arrow"></i>
+        </div>
+        <div class="d-inline navigation-title">
+          <span *ngIf="this.mode === 'create'">Dodavanje novog radnika</span>
+          <span *ngIf="this.mode === 'edit'">Izmena radnika</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / NAVIGATION -->
+
+<div class="p-3">
+  <form class="new-edit-form" [formGroup]="addWorkerForm" (submit)="sendWorkerToDB()">
+    <!-- <label class="label-unos">Ime</label>
+    <input class="form-control form-control-sm" formControlName="name" placeholder="Ime radnika" required minlength="3">
+    <label class="label-unos">Prezime</label>
+    <input class="form-control form-control-sm" formControlName="surname" placeholder="Prezime radnika" required minlength="3">
+    <label class="label-unos">Adresa</label>
+    <input class="form-control form-control-sm" formControlName="address" placeholder="Adresa radnika" required minlength="3">
+    <label class="label-unos">Telefon</label>
+    <input class="form-control form-control-sm" formControlName="phone" placeholder="Telefon radnika" required minlength="9">
+    <label class="label-unos">Datum odrađenog lekarskog pregleda</label>
+    <input class="form-control form-control-sm" type="date" formControlName="medicalExamDate" placeholder="" required minlength="3">
+    <label class="label-unos">Datum isteka lekarskog pregleda</label>
+    <input class="form-control form-control-sm" type="date" formControlName="medicalExamExpirationDate" placeholder="" required minlength="3">
+    <label class="label-unos">Datum zaključenja ugovora o radu</label>
+    <input class="form-control form-control-sm" type="date" formControlName="contractDate" placeholder="" required minlength="3">
+    <label class="label-unos">Datum isteka ugovora o radu</label>
+    <input class="form-control form-control-sm" type="date" formControlName="contractExpirationDate" placeholder="" required minlength="3">
+    <label class="label-unos">Satnica radnika</label>
+    <input class="form-control form-control-sm" type="number" formControlName="hourlyRate" placeholder="Satnica" required minlength="3"> -->
+
+    <mat-form-field>
+      <input matInput placeholder="Naziv" formControlName="name" required minlength="3">
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('name').hasError('required') && this.addWorkerForm.get('name').touched">Polje je obavezno popuniti!</mat-error>
+    <mat-error *ngIf="this.addWorkerForm.get('name').hasError('minlength') && this.addWorkerForm.get('name').touched">Polje mora imati barem 3 karaktera!</mat-error>
+    <mat-form-field>
+      <input matInput placeholder="Prezime" formControlName="surname" required minlength="3">
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('surname').hasError('required') && this.addWorkerForm.get('surname').touched">Polje je obavezno popuniti!</mat-error>
+    <mat-error *ngIf="this.addWorkerForm.get('surname').hasError('minlength') && this.addWorkerForm.get('surname').touched">Polje mora imati barem 3 karaktera!</mat-error>
+
+    <mat-form-field>
+      <input matInput placeholder="Adresa" formControlName="address" required minlength="3">
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('address').hasError('required') && this.addWorkerForm.get('address').touched">Polje je obavezno popuniti!</mat-error>
+    <mat-error *ngIf="this.addWorkerForm.get('address').hasError('minlength') && this.addWorkerForm.get('address').touched">Polje mora imati barem 3 karaktera!</mat-error>
+
+    <mat-form-field>
+      <input matInput placeholder="Telefon" formControlName="phone" required minlength="3">
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('phone').hasError('required') && this.addWorkerForm.get('phone').touched">Polje je obavezno popuniti!</mat-error>
+    <mat-error *ngIf="this.addWorkerForm.get('phone').hasError('minlength') && this.addWorkerForm.get('phone').touched">Polje mora imati barem 3 karaktera!</mat-error>
+    <mat-form-field>
+      <input matInput placeholder="Datum vađenja lekarskog" [matDatepicker]="picker1" formControlName="medicalExamDate" required #pick>
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('medicalExamDate').hasError('required') && this.addWorkerForm.get('medicalExamDate').touched">Polje je obavezno popuniti!</mat-error>
+    <mat-form-field>
+      <input matInput placeholder="Datum isteka lekarskog" [matDatepicker]="picker2" formControlName="medicalExamExpirationDate" required #pick>
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('medicalExamExpirationDate').hasError('required') && this.addWorkerForm.get('medicalExamExpirationDate').touched">Polje je obavezno popuniti!</mat-error>
+    <mat-form-field>
+      <input matInput placeholder="Datum kreiranja ugovora" [matDatepicker]="picker3" formControlName="contractDate" required #pick>
+      <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+      <mat-datepicker #picker3></mat-datepicker>
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('contractDate').hasError('required') && this.addWorkerForm.get('contractDate').touched">Polje je obavezno popuniti!</mat-error>
+    <mat-form-field>
+      <input matInput placeholder="Datum isteka ugovora" [matDatepicker]="picker4" formControlName="contractExpirationDate" required #pick>
+      <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+      <mat-datepicker #picker4></mat-datepicker>
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('contractExpirationDate').hasError('required') && this.addWorkerForm.get('contractExpirationDate').touched">Polje je obavezno popuniti!</mat-error>
+
+    <mat-form-field>
+      <input matInput placeholder="Satnica (din)" type="number" formControlName="hourlyRate" required minlength="3">
+    </mat-form-field>
+    <mat-error *ngIf="this.addWorkerForm.get('address').hasError('hourlyRate') && this.addWorkerForm.get('hourlyRate').touched">Polje je obavezno popuniti!</mat-error>
+    <mat-error *ngIf="this.addWorkerForm.get('address').hasError('hourlyRate') && this.addWorkerForm.get('hourlyRate').touched">Polje mora imati barem 3 karaktera!</mat-error>
+
+    <div class="d-flex justify-content-center">
+      <button mat-raised-button color="primary" class="mt-1" type="submit">{{mode === 'create' ? 'Dodaj' : 'Sačuvaj izmene'}}</button>
+    </div>
+  </form>
+</div>
+

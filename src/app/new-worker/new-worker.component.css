@@ -1,0 +1,8 @@
+.new-edit-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.new-edit-form > * {
+  width: 100%;
+}

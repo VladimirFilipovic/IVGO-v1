@@ -1,0 +1,205 @@
+<!-- NAVIGATION -->
+<div class="navigation d-flex align-items-center">
+  <div class="w-100">
+    <div class="d-flex justify-content-between">
+
+      <div class="align-self-center">
+        <div class="d-inline mx-3" routerLink="/constructionSites">
+          <i class="far fa-arrow-left navigation-arrow"></i>
+        </div>
+        <div class="d-inline navigation-title">
+          <span>Detalji o gradilištu</span>
+        </div>
+      </div>
+
+      <!-- RIGHT OPTION -->
+      <div class="align-self-center" routerLink="/editConstructionSite/{{this.constructionSite?.id}}">
+        <i class="far fa-edit navigation-right-option mr-3"></i>
+      </div>
+      <!-- / RIGHT OPTION -->
+
+    </div>
+  </div>
+</div>
+<!-- / NAVIGATION -->
+
+<mat-tab-group>
+  <mat-tab label="O gradilištu">
+    <div class="container">
+      <div class="row px-2 py-2" style="background-color: #ffffff;">
+        <div class="col px-0">
+          <p class="field-name">
+            Naziv:
+          </p>
+          <p class="field-value roboto-medium">
+            {{constructionSite?.name}}
+          </p>
+          <p class="field-name">
+            Adresa:
+          </p>
+          <p class="field-value roboto-regular">
+            {{constructionSite?.address}}
+          </p>
+          <p class="field-name medical-title">
+            Datum otvaranje i zatvaranje:
+          </p>
+          <div class="d-flex justify-content-around" *ngIf="constructionSite">
+            <div class="date-align">
+              <p class="date-and-month roboto-medium">{{constructionSite?.openingDate.getDate()}}. {{dateToMonth(constructionSite?.openingDate)}}</p>
+              <p class="year roboto-medium">{{constructionSite?.openingDate?.getFullYear()}}.</p>
+            </div>
+            <div class="date-align">
+                <i class="fal fa-briefcase fa-lg"></i><br>
+              <i class="fal fa-long-arrow-right fa-2x"></i>
+            </div>
+            <div class="date-align" *ngIf="constructionSite?.closingDate?.getDate() !== 1">
+              <p class="date-and-month roboto-medium">{{constructionSite?.closingDate?.getDate()}}. {{dateToMonth(constructionSite?.closingDate)}}</p>
+              <p class="year roboto-medium">{{constructionSite?.closingDate?.getFullYear()}}.</p>
+            </div>
+            <div class="date-align" *ngIf="constructionSite?.closingDate.getDate() === 1">
+              <p class="date-and-month roboto-medium">Trenutno<br>otvoreno<p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</mat-tab>
+  <mat-tab label="Radnici">
+    <div class="container">
+      <div class="row">
+        <div class="col px-2">
+          <mat-tab-group>
+            <mat-tab label="Raspoređeni radnici">
+              <mat-accordion>
+                <div>
+                  <button mat-raised-button color="primary" (click)="sameAsYesterday()">Isto kao juče</button>
+                </div>
+                <mat-expansion-panel *ngFor="let workerAndHisHours of workersAndTheirHours">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{workerAndHisHours?.worker.name}} {{workerAndHisHours?.worker.surname}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      <div>{{workerAndHisHours?.workHours}}</div>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div>
+                    <form #workHoursForm="ngForm" (ngSubmit)="addWorkHours(workerAndHisHours?.worker, workerAndHisHours?.workHours, workHoursForm)">
+                      <mat-form-field>
+                        <input matInput placeholder="Radno vreme" ngModel name="workHours" type="number">
+                      </mat-form-field>
+                      <button class="ml-2" *ngIf="workerAndHisHours?.workHours === 0" mat-raised-button type="submit" color="primary">Dodaj</button>
+                      <button class="ml-2" *ngIf="workerAndHisHours?.workHours !== 0" mat-raised-button type="submit" color="primary">Izmeni</button>
+
+                      <button mat-raised-button class="mb-3" color="warn" (click)="removeWorkerAndHisHoursFromConstructionSite(workerAndHisHours?.worker, workHoursForm)">Ukloni sa brisanjem radnih sati</button>
+                      <button mat-raised-button color="warn" (click)="removeWorkerAndKeepHisHoursFromConstructionSite(workerAndHisHours?.worker)">Ukloni bez brisanje radnih sati</button>
+                    </form>
+                  </div>
+                  <div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+
+            </mat-tab>
+            <mat-tab ng-disabled = "true" label="Dodaj radnike">
+              <div class="px-2 py-3 my-2 shadow-sm w-100" style="background-color: white;" *ngFor="let item of listOfAllWorkers">
+                <div class="d-flex justify-content-between">
+                  <p style="margin-bottom: 0px; line-height: 2.5em;">{{item.name}} {{item.surname}}</p>
+                  <button mat-icon-button color="primary" (click)="addWorkerToConstructionSite(item)"><i class="fas fa-plus"></i></button>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </div>
+
+    </div>
+  </mat-tab>
+  <mat-tab label="Finansije">
+    <div class="container">
+      <div class="row px-2 mt-2">
+        <div class="col px-0">
+          <p class="field-name">
+            Ukupno dato na plate:
+          </p>
+          <p class="field-value roboto-medium">
+            {{constructionSite?.totalSalaryGiven | number:'1.0-2'}} din
+          </p>
+          <p class="field-name">
+            Prosecna satnica:
+          </p>
+          <p class="field-value roboto-regular">
+            {{constructionSite?.hourlyRateAvg | number:'1.0-2'}} din/h
+          </p>
+          <p class="field-name">
+            Ukupno radnih sati:
+          </p>
+          <p class="field-value roboto-regular">
+            {{constructionSite?.totalWorkHours}} h
+          </p>
+          <p class="field-name">
+            Ukupno dato na ostalo:
+          </p>
+          <p class="field-value roboto-regular">
+            {{constructionSite?.totalCostOfSubCategories | number:'1.0-2'}} din
+          </p>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col px-2">
+            <form [formGroup]="newCategoryForm" (submit)="addCategory()">
+              <label class="label-unos">Naziv</label>
+              <input class="form-control form-control-sm" formControlName="name" placeholder="Naziv" required minlength="3">
+              <div class="d-flex justify-content-center">
+                <button class="btn btn-primary mt-1" type="submit">Dodaj</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col px-2">
+
+            <mat-accordion>
+              <mat-expansion-panel *ngFor="let category of categories">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{category.categoryName}}
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    {{category.totalCost | number:'1.0-2'}} din
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div>
+                  <form #f="ngForm" (ngSubmit)="addNewCategoryCost(category, f)">
+                    <mat-form-field>
+                      <input matInput placeholder="Nova kupovina" ngModel name="cost" type="number">
+                    </mat-form-field>
+                    <button mat-raised-button type="submit" color="primary">Dodaj</button>
+                  </form>
+                </div>
+                <div *ngFor="let categoryCost of category.categoryCosts.reverse()">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      {{categoryCost.amount | number:'1.0-2'}} din
+                    </div>
+                    <div>
+                      <span>{{categoryCost.date | date:'dd.MM.yyyy'}}, {{categoryCost.date | date:'HH:mm'}}</span>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <i>{{categoryCost.operatorName + ' ' + categoryCost.operatorSurname}}</i>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+
